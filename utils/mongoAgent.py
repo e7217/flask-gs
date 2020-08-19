@@ -16,7 +16,7 @@ from sqlalchemy.dialects.mssql import BIT, DATETIME2
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-import datetime, config
+import time, datetime, config
 from models import getdata
 
 class agent(object):
@@ -59,22 +59,29 @@ class agent(object):
     def upload_tosql_MES600(self):
         pass
 
+    def setMongoConfig(self, dictionary):
+        self.mongoEngine = me.connect(db =dictionary['database'],
+                                      username=dictionary['username'],
+                                      password=dictionary['password'],
+                                      host=dictionary['host'])
+
+    def disconnectMongo(self):
+        me.disconnect()
+
     def parser(self):
-        mongoConfig = config.mongoConfig
-        con = me.connect(db =mongoConfig['database'],
-                 username=mongoConfig['username'],
-                 password=mongoConfig['password'],
-                 host=mongoConfig['host'])
+        """
+        key를 매개체로 해서 value들의 합, 최소값, 최소값, 평균값 dict집합을 리턴한다.
+        :return: ex) {'_id': '운전/정지', 'sum': 259961, 'min': 0, 'max': 513, 'avg': 1.0117379205666583}
+        """
         ## aggregation
         pipeline = [
             {
                 "$group":
                     {
                         "_id":"$key",
-                        "sum":
-                            {
-                                "$sum":"$value"
-                            },
+                        "sum":{
+                            "$sum":"$value"
+                        },
                         "min":{
                             "$min":"$value"
                         },
@@ -88,6 +95,16 @@ class agent(object):
                     }
             }
         ]
-        result = getdata.objects().aggregate(pipeline)
+        return getdata.objects().aggregate(pipeline)
 
-
+agent = agent()
+agent.setMongoConfig(config.mongoConfig)
+start = time.time()
+result = agent.parser()
+end = time.time()
+for i in result:
+    print(i)
+print(end-start)
+print('connection : ', agent.mongoEngine)
+agent.disconnectMongo()
+print('connection : ', agent.mongoEngine)
