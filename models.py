@@ -53,9 +53,17 @@ class testtb01(me.Document):
     temp = me.FloatField()
 
 class getdata(mdb.Document):
+    key = mdb.StringField(max_length=200, required=True)
+    machine = mdb.StringField(max_length=200, required=True)
+    value = mdb.StringField(max_length=200, required=True)
+    호기 = mdb.StringField(max_length=200, required=True)
+    Time = mdb.DateTimeField()
+
+class gsgetdata(mdb.Document):
     wo_no = mdb.StringField(max_length=200, required=True)
     rack_no = mdb.StringField(max_length=200, required=True)
-    chk_no = mdb.StringField(max_length=200, required=True)
+    chk_cd = mdb.StringField(max_length=200, required=True)
+    chk_nm = mdb.StringField(max_length=200, required=True)
     param = mdb.StringField(max_length=200, required=True)
     value = mdb.StringField(max_length=200, required=True)
     chk_tm = mdb.DateTimeField()

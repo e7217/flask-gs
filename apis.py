@@ -21,8 +21,7 @@ class WorkComplete(Resource):
         args = parser.parse_args()
 
         # exec precedure : MES610
-        agent = mongoAgent.agent()
-        agent.setinfo(wo_no=args['wo_no'], rack_no=args['rack_no'])
+        agent = mongoAgent.agent(wo_no=args['wo_no'], rack_no=args['rack_no'])
         agent.conMssql()
         agent.upload_tosql_MES610()
         return {"message":"upload_tosql_MES610"}
@@ -50,8 +49,7 @@ class CycleComplete(Resource):
         args = parser.parse_args()
 
         # exec precedure : MES600
-        agent = mongoAgent.agent()
-        agent.setinfo(wo_no=args['wo_no'], rack_no=args['rack_no'], chk_cd=args['chk_cd'])
+        agent = mongoAgent.agent(wo_no=args['wo_no'], rack_no=args['rack_no'], chk_cd=args['chk_cd'])
         agent.conMssql()
         agent.upload_tosql_MES600()
         return {"message":"upload_to_MES600"}
